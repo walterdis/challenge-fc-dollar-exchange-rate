@@ -1,11 +1,12 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/walterdis/challenge-fc-dollar-exchange-rate/src"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 	"io"
 	"net/http"
 	"time"
@@ -14,7 +15,7 @@ import (
 const dollarApiUrl string = "https://economia.awesomeapi.com.br/json/last/USD-BRL"
 
 func main() {
-	http.HandleFunc("/", getDollarExchange)
+	http.HandleFunc("/cotacao", getDollarExchange)
 
 	fmt.Println("Server started...")
 
@@ -27,30 +28,42 @@ func getDollarExchange(writer http.ResponseWriter, request *http.Request) {
 
 	exchange := src.Exchange{}
 
-	teste := src.Exchange{}
-	err := json.NewDecoder(bytes.NewReader(dollarData)).Decode(&teste)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(teste.USDBRL)
-
-	err = json.Unmarshal(dollarData, &exchange)
-	if err != nil {
-		panic(err)
-	}
-
-	print(exchange.USDBRL.Name)
-
-	storeExchange(dollarData)
+	hydrateExchange(&exchange, dollarData)
+	storeExchange(&exchange)
 
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
 
-	writer.Write([]byte(dollarData))
+	json.NewEncoder(writer).Encode(exchange.Bid)
 }
 
-func storeExchange(dollarData []byte) {
+func hydrateExchange(exchange *src.Exchange, dollarData []byte) {
+	exchangeMap := map[string]map[string]any{}
+
+	_ = json.Unmarshal(dollarData, &exchangeMap)
+
+	jsonData, err := json.Marshal(exchangeMap["USDBRL"])
+
+	err = json.Unmarshal(jsonData, &exchange)
+
+	if err != nil {
+		panic(err)
+	}
+}
+
+func storeExchange(exchange *src.Exchange) {
+	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(ctx, time.Millisecond*10)
+	defer cancel()
+
+	db, err := gorm.Open(sqlite.Open("src/database/exchange.sqlite"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+
+	db.AutoMigrate(src.Exchange{})
+
+	db.WithContext(ctx).Create(exchange)
 
 }
 
@@ -80,12 +93,4 @@ func requestDollarExchange(writer http.ResponseWriter) []byte {
 	}
 
 	return body
-}
-
-func storeDollarExchange() {
-	//db, err := gorm.Open(sqlite.Open("dollar-exchange.db"), &gorm.Config{})
-	//if err != nil {
-	//		panic(err)
-	//	}
-
 }

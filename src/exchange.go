@@ -1,12 +1,7 @@
 package src
 
 type Exchange struct {
-	Id int `gorm:"primary_key"`
-
-	USDBRL USDBRL `json:"USDBRL"`
-}
-
-type USDBRL struct {
+	Id         int `gorm:"primary_key"`
 	Code       string
 	CodeIn     string
 	Name       string
