@@ -32,5 +32,8 @@ WORKDIR /go/src
 
 #ENTRYPOINT CompileDaemon -build="go build -o /build/app" -command="/build/app"
 
-ENTRYPOINT ["go", "run", "server.go"]
+#ENTRYPOINT ["go", "run", "server.go"]
+
+ENTRYPOINT ["/bin/sh", "-c", "go run server/server.go"]
+
 #ENTRYPOINT ["tail", "-f", "/dev/null"]

@@ -13,6 +13,7 @@ import (
 )
 
 const dollarApiUrl string = "https://economia.awesomeapi.com.br/json/last/USD-BRL"
+const dbFile string = "database/exchange.sqlite"
 
 func main() {
 	http.HandleFunc("/cotacao", getDollarExchange)
@@ -56,7 +57,7 @@ func storeExchange(exchange *src.Exchange) {
 	ctx, cancel := context.WithTimeout(ctx, time.Millisecond*10)
 	defer cancel()
 
-	db, err := gorm.Open(sqlite.Open("src/database/exchange.sqlite"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}

@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+const exchangeFile string = "database/cotacao.txt"
+
 func main() {
 
 	request, err := http.Get("http://localhost:8081/cotacao")
@@ -25,7 +27,7 @@ func main() {
 }
 
 func writeExchangeFile(exchangeValue []byte) {
-	f, err := os.Create("cotacao.txt")
+	f, err := os.Create(exchangeFile)
 	if err != nil {
 		panic(err)
 	}
