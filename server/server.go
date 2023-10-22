@@ -30,7 +30,7 @@ func getDollarExchange(writer http.ResponseWriter, request *http.Request) {
 	exchange := src.Exchange{}
 
 	hydrateExchange(&exchange, dollarData)
-	storeExchange(&exchange)
+	storeExchange(&exchange, writer)
 
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
@@ -52,13 +52,14 @@ func hydrateExchange(exchange *src.Exchange, dollarData []byte) {
 	}
 }
 
-func storeExchange(exchange *src.Exchange) {
+func storeExchange(exchange *src.Exchange, writer http.ResponseWriter) {
 	ctx := context.Background()
 	ctx, cancel := context.WithTimeout(ctx, time.Millisecond*10)
 	defer cancel()
 
 	db, err := gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
 	if err != nil {
+		json.NewEncoder(writer).Encode("Internal server error")
 		panic(err)
 	}
 
