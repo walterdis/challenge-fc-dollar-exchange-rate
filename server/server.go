@@ -59,13 +59,14 @@ func storeExchange(exchange *src.Exchange, writer http.ResponseWriter) {
 
 	db, err := gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
 	if err != nil {
-		json.NewEncoder(writer).Encode("Internal server error")
 		panic(err)
 	}
 
 	db.AutoMigrate(src.Exchange{})
 
-	db.WithContext(ctx).Create(exchange)
+	if err := db.WithContext(ctx).Create(exchange).Error; err != nil {
+		panic(err)
+	}
 
 }
 
