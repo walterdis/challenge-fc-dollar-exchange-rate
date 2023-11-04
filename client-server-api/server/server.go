@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/walterdis/fc-go-expert-challenges/src"
+	"github.com/walterdis/fc-go-expert-challenges/client-server-api/src"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"io"
