@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/walterdis/challenge-fc-dollar-exchange-rate/src"
+	"github.com/walterdis/fc-go-expert-challenges/src"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"io"

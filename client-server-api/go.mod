@@ -1,11 +1,10 @@
-module server
+module github.com/walterdis/fc-go-expert-challenges
 
 go 1.21.1
 
 require (
-	github.com/walterdis/challenge-fc-dollar-exchange-rate v0.0.0-20231012135037-e7c6476cf356
-	gorm.io/driver/sqlite v1.5.4
-	gorm.io/gorm v1.25.5
+	gorm.io/driver/sqlite v1.5.3
+	gorm.io/gorm v1.25.4
 )
 
 require (
