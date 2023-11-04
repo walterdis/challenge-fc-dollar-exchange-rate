@@ -54,7 +54,7 @@ func hydrateExchange(exchange *src.Exchange, dollarData []byte) {
 
 func storeExchange(exchange *src.Exchange, writer http.ResponseWriter) {
 	ctx := context.Background()
-	ctx, cancel := context.WithTimeout(ctx, time.Millisecond*10)
+	ctx, cancel := context.WithTimeout(ctx, time.Millisecond*100)
 	defer cancel()
 
 	db, err := gorm.Open(sqlite.Open(dbFile), &gorm.Config{})

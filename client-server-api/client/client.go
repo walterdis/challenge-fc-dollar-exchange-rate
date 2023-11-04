@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const exchangeFile string = "database/cotacao.txt"
+const exchangeFile string = "../database/cotacao.txt"
 
 func main() {
 	ctx := context.Background()
